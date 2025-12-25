@@ -20,6 +20,10 @@
             justify-content: space-between;
             align-items: center;
         }
+        .mylogo {
+            height: 5px;
+            width: 5px;
+        }
 
         .logo {
             font-size: 20px;
@@ -65,6 +69,8 @@
             font-size: 18px;
             color: darkblue;
             font-weight: bold;
+            list-style: none;
+         
         }
 
         button {
@@ -86,15 +92,20 @@
             background-color: darkblue;
             color: white;
             padding: 15px;
-        }
+            position: fixed;   
+            bottom: 0;   
+            width: 100%;   
+            }
     </style>
 </head>
 
 <body>
 
 <header>
-    <div class="logo">Sekinat Training</div>
-    <nav>
+    <div><img src="s logo.jpeg" alt="" style="height:50px; width:30px; margin-top: 5px;">
+    <div class="logo"> Sekinat Training</div>
+    </div>
+    <nav> 
         <a href="#">Home</a>
         <a href="#">About Us</a>
         <a href="#">Features</a>
@@ -123,6 +134,5 @@
         window.location.href = "https://eduslick.com";
     }
 </script>
-
 </body>
 </html>
