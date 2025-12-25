@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Training</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #cde8fc;
+            text-align: center;
+        }
+
+        header {
+            background-color: darkblue;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        h1 {
+            color: darkblue;
+            margin-top: 40px;
+        }
+
+        p {
+            font-size: 18px;
+        }
+
+        h2 {
+            color: darkblue;
+            margin-top: 30px;
+        }
+
+       
+        .hobby-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 400px;
+            margin: 20px auto;
+            padding: 0;
+        }
+
+        .hobby-list li {
+            background-color: white;
+            padding: 20px;
+            border: 2px solid darkblue;
+            border-radius: 10px;
+            font-size: 18px;
+            color: darkblue;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 10px;
+            margin: 30px 0 40px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+        }
+
+        footer {
+            background-color: darkblue;
+            color: white;
+            padding: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Sekinat Training</div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About Us</a>
+        <a href="#">Features</a>
+        <a href="#">Contact Us</a>
+    </nav>
+</header>
+
+<h1>Welcome to My Website</h1>
+<p>This is my first simple website</p>
+
+<h2>My Hobbies</h2>
+<ul class="hobby-list">
+    <li>Reading</li>
+    <li>Traveling</li>
+    <li>Cooking</li>
+</ul>
+
+<button onclick="goToWebsite()">Go to EduSlick</button>
+
+<footer>
+    2025 Sekinat Training
+</footer>
+
+<script>
+    function goToWebsite() {
+        window.location.href = "https://eduslick.com";
+    }
+</script>
+
+</body>
+</html>

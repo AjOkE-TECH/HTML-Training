@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Portfolio</title>
+
+    <style>
+        /* GENERAL PAGE STYLE */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9f9f9;
+        }
+
+        /* HEADER (top bar) */
+        header {
+            justify-content: space-between; 
+            align-items: center;
+            padding: 10px 40px;
+            background: #000;
+            color: #fff;
+        }
+     
+
+        .hero-text span {
+            color: #850e4f; /* color of your name */
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #00b3ff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+       
+
+        /* ABOUT SECTION */
+        .about, .contact {
+            padding: 50px 40px;
+        }
+
+        /* CONTACT FORM STYLING */
+        form {
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, textarea {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            background: #00b3ff;
+            padding: 12px;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #008acc;
+        }
+    </style>
+
+</head>
+<body>
+
+    <!-- HEADER SECTION -->
+    <header>
+        <h2>My Portfolio</h2>
+          <div>
+          <td width="96"><font face="vardana, geneva, sans-serif" 
+            color="white"><h3>home</h3></font> </td>
+          <td width="113"><font face="vardana, geneva, sans-serif" 
+            color="white"><h3>about</h3></font> </td>
+          <td width="113"><font face="vardana, geneva, sans-serif" 
+            color="white"><h3>contact</h3></font> </td>
+          </div>  
+       
+    </header>
+
+    <!-- HERO / HOME SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-text">
+            <h1>Hello, I'm <span>MUTOLIB SEKINAT OLAMIDE</span></h1>
+            <p>I am a beginner web developer skilled in HTML and CSS.</p>
+            <a href="#about" class="btn">Learn More</a>
+        </div>
+
+        
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about" id="about">
+        <h1>About Me</h1>
+        <p>Hello! I'm a passionate beginner web developer learning HTML,
+             CSS, and soon JavaScript.  
+           I enjoy building clean and simple websites.</p>
+
+        <h2>My Skills</h2>
+        <ul>
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>Responsive Design</li>
+        </ul>
+    </section>
+
+    <section class="contact" id="contact">
+        <h1>Contact Me</h1>
+
+        <form>
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Email Address" required>
+            <textarea placeholder="Your Message" rows="5"></textarea>
+            <button type="submit">Send</button>
+        </form>
+    </section>
+
+</body>
+</html>

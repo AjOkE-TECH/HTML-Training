@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Examination System – Defense Demo</title>
+  <style>
+    :root {
+      --bg: #0f172a;          /* slate-900 */
+      --panel: #111827;       /* gray-900 */
+      --muted: #94a3b8;       /* slate-400 */
+      --text: #e5e7eb;        /* gray-200 */
+      --accent: #22d3ee;      /* cyan-400 */
+      --accent-2: #a78bfa;    /* violet-400 */
+      --ok: #34d399;          /* emerald-400 */
+      --warn: #f59e0b;        /* amber-500 */
+      --bad: #ef4444;         /* red-500 */
+      --card: #0b1220;        /* custom */
+      --border: #1f2937;      /* gray-800 */
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#0b1220, #0f172a 20%);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;color:var(--text)}
+    header{position:sticky;top:0;background:rgba(11,18,32,.85);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--border);z-index:10}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    h1{font-size:clamp(22px,3vw,34px);margin:0 0 8px}
+    .subtitle{color:var(--muted);font-size:14px}
+
+    /* Tabs */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .tab{padding:10px 14px;border:1px solid var(--border);border-radius:999px;background:#0b1220;color:var(--text);cursor:pointer;user-select:none;transition:.2s}
+    .tab[aria-selected="true"], .tab:hover{border-color:var(--accent);box-shadow:0 0 0 2px inset rgba(34,211,238,.15)}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
+    .card{grid-column:span 12;background:linear-gradient(180deg,#0b1220,#0f172a);border:1px solid var(--border);border-radius:16px;padding:16px}
+    @media(min-width:900px){.card.half{grid-column:span 6}}
+    .card h2{margin:0 0 12px;font-size:20px}
+    .card h3{margin:16px 0 8px;font-size:15px;color:var(--accent)}
+    label{display:block;font-size:13px;color:var(--muted);margin:10px 0 6px}
+    input, select, textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#0a0f1d;color:var(--text);outline:none}
+    textarea{min-height:92px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > *{flex:1 1 220px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:#0a0f1d;color:var(--text);cursor:pointer;transition:.2s}
+    .btn:hover{border-color:var(--accent)}
+    .btn.primary{background:linear-gradient(90deg, rgba(34,211,238,.15), rgba(167,139,250,.15));border-color:var(--accent)}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid var(--border);color:var(--muted);font-size:12px}
+    .muted{color:var(--muted)}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    .hint{font-size:12px;color:var(--muted)}
+    .log{background:#070b15;border:1px dashed var(--border);border-radius:12px;padding:10px;max-height:240px;overflow:auto;font-size:12px}
+    .badge{padding:4px 8px;border-radius:999px;border:1px solid var(--border);font-size:12px}
+    .ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+    .footer{margin:24px 0 40px;color:var(--muted);font-size:12px;text-align:center}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Online Examination System – Inputs Demo</h1>
+      <div class="subtitle">Covers Registration/Auth, Instructor Setup, Exam Content, Student Inputs, Proctoring, and Admin/System.</div>
+      <div class="tabs" role="tablist" id="tabs"></div>
+    </div>
+  </header>
+
+  <main class="wrap" id="panels">
+    <!-- Panels will be toggled via JS -->
+
+    <!-- 1. USER REGISTRATION & AUTH -->
+    <section class="grid panel" data-tab="1. Registration & Authentication" aria-hidden="false">
+      <div class="card">
+        <h2>1) User Registration & Authentication Inputs</h2>
+        <form class="grid">
+          <div class="card half">
+            <h3>Identity</h3>
+            <label>Full Name<input type="text" placeholder="e.g., Odebunmi Abdullahi Adegboyega"></label>
+            <div class="row">
+              <label>Matric No / Username<input type="text" placeholder="NCSE/23/0035 or username"></label>
+              <label>Email Address<input type="email" placeholder="you@gmail.com"></label>
+            </div>
+            <label>Phone Number<input type="tel" placeholder="+234 903 700 7324"></label>
+            <label>Password (stored as <span class="mono">hash</span>)
+              <input id="pwd" type="password" placeholder="••••••••">
+            </label>
+            <div class="hint">Demo only: hashing occurs on the backend. This UI does not hash.</div>
+            <div class="row" style="margin-top:10px">
+              <button type="button" class="btn" onclick="demoHash()">Preview SHA-256 (demo)</button>
+              <span id="hashOut" class="mono hint"></span>
+            </div>
+          </div>
+
+          <div class="card half">
+            <h3>Security & MFA</h3>
+            <div id="secQA">
+              <label>Security Question
+                <input type="text" placeholder="e.g., First primary school?">
+              </label>
+              <label>Answer<input type="text" placeholder="Type answer"></label>
+            </div>
+            <div class="row"><button type="button" class="btn" onclick="addQA()">+ Add another question</button></div>
+            <div class="row" style="margin-top:10px">
+              <label>OTP (email/SMS)<input id="otpInput" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code"></label>
+              <div>
+                <label class="hidden">&nbsp;</label>
+                <button type="button" class="btn primary" onclick="sendOTP()">Send OTP (demo)</button>
+                <div class="hint">MFA demo: generates a random 6‑digit code locally.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card half">
+            <h3>Biometric Data</h3>
+            <div class="row">
+              <button type="button" class="btn" onclick="startCam('bioCam')">Enable Camera</button>
+              <button type="button" class="btn" onclick="stopCam('bioCam')">Stop</button>
+            </div>
+            <video id="bioCam" autoplay playsinline style="width:100%;margin-top:8px;border-radius:12px;border:1px solid var(--border)"></video>
+            <div class="hint">Demo: facial scan placeholder using browser camera (no data stored).</div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. INSTRUCTOR INPUTS (EXAM CREATION) -->
+    <section class="grid panel hidden" data-tab="2. Instructor (Exam Creation)">
+      <div class="card">
+        <h2>2) Instructor Inputs – Exam Creation</h2>
+        <div class="grid">
+          <div class="card half">
+            <h3>Exam Meta</h3>
+            <div class="row">
+              <label>Exam Title<input type="text" placeholder="Management Information System"></label>
+              <label>Course Code<input type="text" placeholder="COM 224"></label>
+            </div>
+            <div class="row">
+              <label>Instructor ID/Email<input type="text" placeholder="lecturer@ogitech.edu.ng"></label>
+              <label>Credentials<input type="password" placeholder="••••••"></label>
+            </div>
+            <label>Assigned Group/Class<select>
+              <option>ND II – Computer Science</option>
+              <option>HND I – Computer Science</option>
+              <option>HND II – Computer Science</option>
+              <option>Custom…</option>
+            </select></label>
+          </div>
+          <div class="card half">
+            <h3>Scheduling & Settings</h3>
+            <div class="row">
+              <label>Exam Date/Start<input type="datetime-local"></label>
+              <label>Duration (minutes)<input id="duration" type="number" min="10" value="60"></label>
+            </div>
+            <label>Exam Instructions<textarea placeholder="Read all instructions carefully…"></textarea></label>
+            <div class="row">
+              <label>Randomization<select id="rand">
+                <option value="none">None</option>
+                <option value="shuffle">Shuffle Questions</option>
+                <option value="shuffle_all">Shuffle Questions & Options</option>
+              </select></label>
+              <div>
+                <label class="hidden">&nbsp;</label>
+                <span class="pill"><input type="checkbox" id="openBook"> <span>Open‑book allowed</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. EXAM CONTENT & QUESTIONS -->
+    <section class="grid panel hidden" data-tab="3. Exam Content & Questions">
+      <div class="card">
+        <h2>3) Exam Content & Questions</h2>
+        <div class="grid">
+          <div class="card half">
+            <h3>Question Builder</h3>
+            <label>Question Text (LaTeX/MathML supported)<textarea id="qText" placeholder="e.g., Solve: $a^2 + b^2 = c^2$"></textarea></label>
+            <div class="row">
+              <label>Type<select id="qType" onchange="toggleOptions()">
+                <option>MCQ</option>
+                <option>Essay</option>
+                <option>Matching</option>
+                <option>Upload</option>
+              </select></label>
+              <label>Weight (%)<input id="qWeight" type="number" min="0" max="100" value="5"></label>
+            </div>
+            <div id="mcqBox">
+              <div class="row" style="margin:8px 0">
+                <button type="button" class="btn" onclick="addOption()">+ Add Option</button>
+                <span class="hint">Mark the correct option(s).</span>
+              </div>
+              <div id="options"></div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <button type="button" class="btn primary" onclick="saveQuestion()">Save Question</button>
+              <span class="hint" id="saveHint"></span>
+            </div>
+          </div>
+
+          <div class="card half">
+            <h3>Metadata</h3>
+            <div class="row">
+              <label>Difficulty<select id="diff">
+                <option>Easy</option>
+                <option>Medium</option>
+                <option>Hard</option>
+              </select></label>
+              <label>Bloom’s Taxonomy<select id="bloom">
+                <option>Remember</option>
+                <option>Understand</option>
+                <option>Apply</option>
+                <option>Analyze</option>
+                <option>Evaluate</option>
+                <option>Create</option>
+              </select></label>
+            </div>
+            <label>Attach Media<input type="file" accept="image/*,video/*,audio/*,application/pdf"></label>
+            <div class="hint">Supports embedded images or media.
+            </div>
+            <h3 style="margin-top:16px">Saved Questions</h3>
+            <div id="qList" class="log"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. STUDENT INPUTS DURING EXAMS -->
+    <section class="grid panel hidden" data-tab="4. Student Inputs During Exams">
+      <div class="card">
+        <h2>4) Student Inputs During Exams</h2>
+        <div class="grid">
+          <div class="card half">
+            <h3>Exam Access & Responses</h3>
+            <label>Access Code/Token<input type="text" placeholder="Enter code from instructor"></label>
+            <label>Submit Answer / Upload File<input type="file"></label>
+            <div class="row">
+              <button type="button" class="btn" onclick="logEvent('Answer submitted')">Submit</button>
+              <button type="button" class="btn" onclick="logEvent('Answer updated')">Save Draft</button>
+            </div>
+            <h3>Response Timestamps</h3>
+            <div id="respLog" class="log"></div>
+          </div>
+
+          <div class="card half">
+            <h3>Time & Proctoring Consent</h3>
+            <div class="row">
+              <button type="button" class="btn" onclick="startTimer()">Start Exam</button>
+              <button type="button" class="btn" onclick="resetTimer()">Reset</button>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div class="badge">Remaining Time: <span id="timeLeft">--:--</span></div>
+              <div class="badge">Started at: <span id="startedAt">--</span></div>
+            </div>
+            <div class="row" style="margin-top:12px">
+              <button type="button" class="btn" onclick="startCam('examCam')">Allow Webcam</button>
+              <button type="button" class="btn" onclick="stopCam('examCam')">Stop Webcam</button>
+            </div>
+            <video id="examCam" autoplay playsinline style="width:100%;margin-top:8px;border-radius:12px;border:1px solid var(--border)"></video>
+            <div class="hint">Permission prompts are browser‑based. This demo only previews the camera.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PROCTORING & MONITORING INPUTS -->
+    <section class="grid panel hidden" data-tab="5. Proctoring & Monitoring">
+      <div class="card">
+        <h2>5) Proctoring & Monitoring Inputs</h2>
+        <div class="grid">
+          <div class="card half">
+            <h3>Live Streams & Sensors</h3>
+            <div class="row">
+              <button type="button" class="btn" onclick="startCam('proctorCam')">Start Webcam</button>
+              <button type="button" class="btn" onclick="stopCam('proctorCam')">Stop Webcam</button>
+            </div>
+            <video id="proctorCam" autoplay playsinline style="width:100%;margin-top:8px;border-radius:12px;border:1px solid var(--border)"></video>
+            <div class="hint">Audio monitoring, facial recognition, and duplication checks are placeholders for backend/ML services.</div>
+          </div>
+
+          <div class="card half">
+            <h3>Activity & AI Signals</h3>
+            <div class="row">
+              <span class="pill">Tab switches: <span id="tabSwitches" class="mono">0</span></span>
+              <span class="pill">Copy/Paste attempts: <span id="cpCount" class="mono">0</span></span>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div class="badge">AI Suspicion Score: <span id="susScore" class="mono">0</span>/100</div>
+              <button type="button" class="btn" onclick="recomputeScore()">Recompute</button>
+            </div>
+            <h3 style="margin-top:12px">Logs</h3>
+            <div id="procLog" class="log"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. ADMINISTRATIVE & SYSTEM-LEVEL INPUTS -->
+    <section class="grid panel hidden" data-tab="6. Admin & System">
+      <div class="card">
+        <h2>6) Administrative & System‑Level Inputs</h2>
+        <div class="grid">
+          <div class="card half">
+            <h3>Roles & Permissions</h3>
+            <div class="row">
+              <label>Assign Role<select>
+                <option>Student</option>
+                <option>Instructor</option>
+                <option>Proctor</option>
+                <option>Administrator</option>
+              </select></label>
+              <label>User ID / Email<input type="text" placeholder="user@university.edu"></label>
+            </div>
+            <div class="row">
+              <span class="pill"><input type="checkbox"> Create Exams</span>
+              <span class="pill"><input type="checkbox"> Grade Exams</span>
+              <span class="pill"><input type="checkbox"> View Proctor Logs</span>
+              <span class="pill"><input type="checkbox"> Manage System</span>
+            </div>
+          </div>
+          <div class="card half">
+            <h3>Logs & Maintenance</h3>
+            <label>Access Logs & IP Metadata<textarea class="mono" placeholder="2025‑09‑02 08:15:21 – 10.1.23.9 – LOGIN OK
+2025‑09‑02 08:17:04 – 102.89.10.5 – MFA FAIL
+…"></textarea></label>
+            <div class="row">
+              <label>System Backup<input type="file"></label>
+              <label>Apply Patch<input type="file"></label>
+            </div>
+            <label>Crash Reports / Exceptions<textarea class="mono" placeholder="NullReferenceException at ExamService.Save()"></textarea></label>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer">Demo UI only – no backend. Designed for defense presentation: clean layout, visible inputs, and simulated events.</div>
+
+  <script>
+    /* ---------- Tabs ---------- */
+    const tabsEl = document.getElementById('tabs');
+    const panels = Array.from(document.querySelectorAll('.panel'));
+    panels.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'tab';
+      btn.role = 'tab';
+      btn.textContent = p.dataset.tab;
+      btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      btn.addEventListener('click', () => selectTab(i));
+      tabsEl.appendChild(btn);
+    });
+    function selectTab(idx){
+      panels.forEach((p,i)=>{p.classList.toggle('hidden', i!==idx); p.setAttribute('aria-hidden', i!==idx)});
+      tabsEl.querySelectorAll('.tab').forEach((t,i)=>t.setAttribute('aria-selected', i===idx ? 'true' : 'false'));
+    }
+
+    /* ---------- Demo Hash (client-side only for visualization) ---------- */
+    async function demoHash(){
+      const str = document.getElementById('pwd').value;
+      if(!str){document.getElementById('hashOut').textContent='';return}
+      const enc = new TextEncoder().encode(str);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      const hashArray = Array.from(new Uint8Array(buf));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      document.getElementById('hashOut').textContent = hashHex;
+    }
+
+    /* ---------- Security Q/A dynamic ---------- */
+    function addQA(){
+      const wrap = document.getElementById('secQA');
+      const q = document.createElement('label');
+      q.innerHTML = 'Security Question<input type="text" placeholder="Another question">';
+      const a = document.createElement('label');
+      a.innerHTML = 'Answer<input type="text" placeholder="Answer">';
+      wrap.appendChild(q); wrap.appendChild(a);
+    }
+
+    /* ---------- OTP demo ---------- */
+    function sendOTP(){
+      const code = Math.floor(100000 + Math.random()*900000).toString();
+      document.getElementById('otpInput').value = code;
+      addLog('respLog', `OTP generated (demo): ${code}`);
+    }
+
+    /* ---------- Camera helpers ---------- */
+    const streams = {};
+    async function startCam(id){
+      try{
+        const v = document.getElementById(id);
+        const stream = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+        v.srcObject = stream; streams[id] = stream;
+      }catch(err){ alert('Camera error: '+ err.message); }
+    }
+    function stopCam(id){
+      const s = streams[id]; if(!s) return; s.getTracks().forEach(t=>t.stop()); delete streams[id];
+      const v = document.getElementById(id); v.srcObject = null;
+    }
+
+    /* ---------- Exam Content: MCQ options ---------- */
+    const optionsBox = document.getElementById('options');
+    let optCount = 0;
+    function addOption(){
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.style.margin = '6px 0';
+      row.innerHTML = `<label>Option <input type="text" placeholder="Option text"></label>
+      <label class="pill" style="align-items:center;justify-content:center"><input type="checkbox"> Correct</label>
+      <button type="button" class="btn" onclick="this.parentElement.remove(); recomputeScore();">Remove</button>`;
+      optionsBox.appendChild(row); optCount++;
+    }
+    function toggleOptions(){
+      const type = document.getElementById('qType').value;
+      document.getElementById('mcqBox').style.display = (type === 'MCQ') ? 'block' : 'none';
+    }
+    function saveQuestion(){
+      const q = document.getElementById('qText').value.trim();
+      const type = document.getElementById('qType').value;
+      const w = document.getElementById('qWeight').value;
+      const diff = document.getElementById('diff').value;
+      const bloom = document.getElementById('bloom').value;
+      if(!q){ document.getElementById('saveHint').textContent = 'Enter question text'; return; }
+      const item = `[${type}] (${w}%) {${diff} / ${bloom}} – ${q.substring(0, 120)}${q.length>120?'…':''}`;
+      const box = document.getElementById('qList');
+      const p = document.createElement('div'); p.textContent = item; box.prepend(p);
+      document.getElementById('saveHint').textContent = 'Saved!';
+      setTimeout(()=>document.getElementById('saveHint').textContent='', 1200);
+      recomputeScore();
+    }
+
+    /* ---------- Student: timestamps & timer ---------- */
+    function addLog(targetId, text){
+      const box = document.getElementById(targetId);
+      const line = document.createElement('div');
+      const ts = new Date().toLocaleString();
+      line.textContent = `[${ts}] ${text}`;
+      box.prepend(line);
+    }
+    function logEvent(text){ addLog('respLog', text); recomputeScore(); }
+
+    let timer = null; let remain = 0;
+    function startTimer(){
+      const mins = parseInt(document.getElementById('duration').value || '60', 10);
+      remain = mins * 60; document.getElementById('startedAt').textContent = new Date().toLocaleTimeString();
+      renderTime(); if(timer) clearInterval(timer);
+      timer = setInterval(()=>{ remain = Math.max(0, remain-1); renderTime(); if(remain===0) clearInterval(timer); },1000);
+    }
+    function resetTimer(){ if(timer) clearInterval(timer); remain=0; renderTime(); document.getElementById('startedAt').textContent='--'; }
+    function renderTime(){
+      const m = String(Math.floor(remain/60)).padStart(2,'0');
+      const s = String(remain%60).padStart(2,'0');
+      document.getElementById('timeLeft').textContent = `${m}:${s}`;
+    }
+
+    /* ---------- Proctoring: activity & AI score ---------- */
+    let tabSwitches = 0, cpCount = 0;
+    let lastKeyTs = 0; const keyIntervals = [];
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden){ tabSwitches++; document.getElementById('tabSwitches').textContent = tabSwitches; addLog('procLog','Tab switch detected'); recomputeScore(); }
+    });
+    ['copy','paste','cut'].forEach(evt=>{
+      document.addEventListener(evt, ()=>{ cpCount++; document.getElementById('cpCount').textContent = cpCount; addLog('procLog', `${evt.toUpperCase()} attempt`); recomputeScore(); });
+    });
+    document.addEventListener('keydown', ()=>{
+      const now = performance.now();
+      if(lastKeyTs){ keyIntervals.push(now - lastKeyTs); }
+      lastKeyTs = now;
+      const avg = keyIntervals.length ? Math.round(keyIntervals.reduce((a,b)=>a+b,0)/keyIntervals.length) : 0;
+      document.getElementById('ksAvg').textContent = avg;
+    });
+
+    function recomputeScore(){
+      const events = tabSwitches*20 + cpCount*10; // simple heuristic for demo
+      const edits = document.getElementById('qList').children.length;
+      const answers = document.getElementById('respLog').children.length;
+      // Lower score for good activity; higher for suspicious events
+      let score = Math.min(100, Math.max(0, events - (edits+answers)*2));
+      document.getElementById('susScore').textContent = score;
+    }
+  </script>
+</body>
+</html>

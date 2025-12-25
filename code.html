@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>My first web page </title>
+  <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" Ensures the text on your webpage displays correctly across browsers and devices./>
+    <meta name="viewport" content="width=device-width, initial-scale=1" Makes your website mobile-friendly and responsive./>
+    <style type="text/css">
+        Body{
+            color: red;
+        }
+    </style>
+
+    <script>
+        function my Function() {
+            var x =document .getElementById("fname") ;
+            x.value =x.value.toUppercase();
+        }
+    </script>
+</head>
+
+<body>
+<p>this is a simple html document.</p> 
+this javascript will capitalize my name:
+<p>Enter your name: <input type="text" id="fname" onchange="myFunction()"></p>  
+
+<p> This is Line 1. <br> This is line 2. </p>
+</body>
+</html>
